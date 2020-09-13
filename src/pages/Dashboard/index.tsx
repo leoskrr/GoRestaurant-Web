@@ -28,6 +28,9 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     async function loadFoods(): Promise<void> {
       // TODO LOAD FOODS
+      const foodsResponse = await api.get<IFoodPlate[]>('/foods');
+
+      setFoods(foodsResponse.data);
     }
 
     loadFoods();
