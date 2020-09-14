@@ -74,7 +74,6 @@ const Dashboard: React.FC = () => {
   ): Promise<void> {
     // TODO UPDATE A FOOD PLATE ON THE API
     try {
-      // TODO ADD A NEW FOOD PLATE TO THE API
       const { id, available } = editingFood;
 
       const updatedFood = await api.put<IFoodPlate>(
@@ -99,6 +98,15 @@ const Dashboard: React.FC = () => {
 
   async function handleDeleteFood(id: number): Promise<void> {
     // TODO DELETE A FOOD PLATE FROM THE API
+    try {
+      await api.delete(`/foods/${id}`);
+
+      const newFoods = foods.filter(food => food.id !== id);
+
+      setFoods(newFoods);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   function toggleModal(): void {
@@ -137,7 +145,7 @@ const Dashboard: React.FC = () => {
             <Food
               key={food.id}
               food={food}
-              handleDelete={handleDeleteFood}
+              handleDelete={() => handleDeleteFood(food.id)}
               handleEditFood={() => handleEditFood(food)}
             />
           ))}
