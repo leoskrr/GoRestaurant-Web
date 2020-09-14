@@ -73,6 +73,28 @@ const Dashboard: React.FC = () => {
     food: Omit<IFoodPlate, 'id' | 'available'>,
   ): Promise<void> {
     // TODO UPDATE A FOOD PLATE ON THE API
+    try {
+      // TODO ADD A NEW FOOD PLATE TO THE API
+      const { id, available } = editingFood;
+
+      const updatedFood = await api.put<IFoodPlate>(
+        `/foods/${editingFood.id}`,
+        {
+          id,
+          available,
+          ...food,
+        },
+      );
+
+      const updatedFoodIndex = foods.lastIndexOf(editingFood);
+      const newFoods = [...foods];
+
+      newFoods[updatedFoodIndex] = updatedFood.data;
+
+      setFoods(newFoods);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async function handleDeleteFood(id: number): Promise<void> {
@@ -89,6 +111,9 @@ const Dashboard: React.FC = () => {
 
   function handleEditFood(food: IFoodPlate): void {
     // TODO SET THE CURRENT EDITING FOOD ID IN THE STATE
+    toggleEditModal();
+    setEditingFood(food);
+    // handleUpdateFood(food);
   }
 
   return (
@@ -113,7 +138,7 @@ const Dashboard: React.FC = () => {
               key={food.id}
               food={food}
               handleDelete={handleDeleteFood}
-              handleEditFood={handleEditFood}
+              handleEditFood={() => handleEditFood(food)}
             />
           ))}
       </FoodsContainer>
