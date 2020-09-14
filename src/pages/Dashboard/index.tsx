@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import * as Yup from 'yup';
 
 import Header from '../../components/Header';
 
@@ -42,17 +41,6 @@ const Dashboard: React.FC = () => {
   ): Promise<void> {
     try {
       // TODO ADD A NEW FOOD PLATE TO THE API
-      const schema = Yup.object().shape({
-        name: Yup.string().required('O nome da comida é obrigatório'),
-        image: Yup.string().url().required('Informe o link da imagem'),
-        price: Yup.number().required('O preço da comida é obrigatório'),
-        description: Yup.string().required('Informe uma descrição'),
-      });
-
-      await schema.validate(food, {
-        abortEarly: false,
-      });
-
       const newFood = await api.post<IFoodPlate>('/foods', {
         ...food,
         available: true,
@@ -60,12 +48,7 @@ const Dashboard: React.FC = () => {
 
       setFoods([...foods, newFood.data]);
     } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const allErrors = err.errors;
-        const errors = allErrors.join('\n');
-
-        alert(errors);
-      }
+      console.log(err);
     }
   }
 
